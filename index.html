@@ -32,7 +32,7 @@
                     <label class="block text-sm font-bold text-slate-700 mb-2" for="user-dept">Departman / Birim</label>
                     <select id="user-dept" class="w-full border border-slate-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-500 transition-all bg-white">
                         <option value="">Seçim Yapınız</option>
-                        <option value="Alüminyum Enjeksiyon">Dökümhane</option>
+                        <option value="Alüminyum Enjeksiyon">Alüminyum Enjeksiyon</option>
                         <option value="Motor">Motor</option>
                         <option value="Vites Kutusu">Vites Kutusu</option>
                         <option value="Lojistik">Lojistik</option>
@@ -71,7 +71,7 @@
                 <p id="result-message" class="mb-10 text-slate-600 font-medium"></p>
                 <div class="flex flex-col gap-3">
                     <button onclick="showStats()" class="bg-slate-900 text-white font-bold py-4 rounded-lg">Verileri Görüntüle</button>
-                    <button onclick="appReset()" class="bg-slate-100 text-slate-700 font-bold py-4 rounded-lg">Yeni Kayıt</button>
+                    <button onclick="appReset()" class="bg-slate-100 text-slate-700 font-bold py-4 rounded-lg">Yeni Katılımcı</button>
                 </div>
             </div>
 
@@ -80,13 +80,11 @@
                     <h2 class="text-2xl font-black">İstatistikler</h2>
                     <button onclick="appReset()" class="text-slate-400 font-bold">Kapat</button>
                 </div>
-                <div id="admin-panel" class="mb-10">
-                    <div class="bg-slate-50 rounded-xl p-2">
-                        <table class="w-full text-sm">
-                            <thead><tr class="text-slate-500 text-left"><th class="p-3">Birim</th><th class="p-3">Katılımcı</th><th class="p-3 text-right">Ort</th></tr></thead>
-                            <tbody id="dept-stats-body"></tbody>
-                        </table>
-                    </div>
+                <div class="bg-slate-50 rounded-xl p-2 mb-10">
+                    <table class="w-full text-sm">
+                        <thead><tr class="text-slate-500 text-left"><th class="p-3">Birim</th><th class="p-3">Katılımcı</th><th class="p-3 text-right">Ort</th></tr></thead>
+                        <tbody id="dept-stats-body"></tbody>
+                    </table>
                 </div>
                 <div class="bg-slate-50 rounded-xl p-2 max-h-64 overflow-y-auto">
                     <table class="w-full text-sm">
@@ -95,7 +93,7 @@
                     </table>
                 </div>
                 <div class="mt-8 flex flex-col gap-3">
-                    <button onclick="exportData()" class="bg-emerald-700 text-white font-bold py-4 rounded-lg">CSV İndir</button>
+                    <button onclick="exportData()" class="bg-emerald-700 text-white font-bold py-4 rounded-lg shadow-md">CSV İndir</button>
                     <button onclick="clearAllData()" class="text-red-500 text-xs py-2">Sıfırla</button>
                 </div>
             </div>
@@ -104,46 +102,44 @@
 
     <script>
         const soruHavuzu = [
-            { question: "Görseldeki Tehlikeli Atık ünitesine aşağıdakilerden hangisi ATILMAZ?", options: ["Yağlı metal talaşı", "Kontamine eldiven", "Temiz karton kutu", "Boş toner"], correctAnswer: 2, image: "kutu-tehlikeli.jpg" },
-            { question: "Görseldeki Evsel Atık ünitesine atılması en uygun madde hangisidir?", options: ["Yağlı üstüpü", "Islanmış peçete", "Alüminyum içecek kutusu", "Bitmiş pil"], correctAnswer: 1, image: "kutu-evsel.jpg" },
-            { question: "Aşağıdakilerden hangisi görseldeki Geri Dönüşüm ünitesine ATILMAMALIDIR?", options: ["Temiz naylon poşet", "Metal içecek kutusu", "Yağlı absorban ped", "Boş plastik şişe"], correctAnswer: 2, image: "kutu-geri-donusum.jpg" },
-            { question: "Alüminyum enjeksiyon hattından çıkan yağlı metal talaşları nereye atılmalıdır?", options: ["Tehlikeli Atık", "Evsel Atık", "Naylon Atık", "Plastik Atık"], correctAnswer: 0, image: "yagli-talas.jpg" },
-            { question: "Piston yağı kalıntısı içeren bu tür atıkların doğru kategorisi nedir?", options: ["Tehlikeli Atık", "Evsel Atık", "Dönüşümlü Ambalaj", "Plastik Atık"], correctAnswer: 0, image: "piston-yagi.jpg" },
-            { question: "Kullanılmış atık maskeler hangi üniteye atılmalıdır?", options: ["Evsel Atık", "Tehlikeli Atık", "Plastik Atık", "Naylon Atık"], correctAnswer: 0, image: "maske-eldiven.jpg" },
-            { question: "Tehlikeli madde işareti taşıyan bu boş bidonlar nereye atılmalıdır?", options: ["Tehlikeli Atık", "Plastik Atık", "Evsel Atık", "Absorban Kabı"], correctAnswer: 0, image: "kimyasal-bidon.jpg" },
-            { question: "Yağ sızıntısı temizliğinde kullanılan bu pedler hangi kutuya atılır?", options: ["Tehlikeli Atık", "Absorban Kabı", "Evsel Atık", "Plastik Atık"], correctAnswer: 0, image: "yagli-ped.jpg" },
-            { question: "Lojistik biriminden çıkan bu sert plastik şerit çemberler nereye atılmalıdır?", options: ["Plastik Atık", "Atık Karton", "Tehlikeli Atık", "Evsel Atık"], correctAnswer: 0, image: "plastik-cember.jpg" },
-            { question: "Arızalı sensörler ve elektronik kartlar hangi sınıfa dahildir?", options: ["Elektronik Atık", "Tehlikeli Atık", "Plastik Atık", "Evsel Atık"], correctAnswer: 0, image: "elektronik-atik.jpg" },
-            { question: "Yedek parça ambalajından çıkan temiz poşetler nereye atılır?", options: ["Naylon Atık", "Plastik Atık", "Evsel Atık", "Tehlikeli Atık"], correctAnswer: 0, image: "temiz-naylon.jpg" },
-            { question: "Tesis içinde bulunan bu atıkların bertaraf noktası neresidir?", options: ["Atık Pil Kutusu", "Tehlikeli Atık", "Evsel Atık", "Naylon Atık"], correctAnswer: 0, image: "atik-pil.jpg" },
-            { question: "Ofis yazıcılarından çıkan bu boş üniteler hangi sınıfa girer?", options: ["Tehlikeli Atık", "Plastik Atık", "Kağıt Atık", "Evsel Atık"], correctAnswer: 0, image: "bos-toner.jpg" },
-            { question: "Aydınlatma sisteminden çıkan kırık floresanlar nereye atılır?", options: ["Tehlikeli Atık", "Cam Atık", "Evsel Atık", "Plastik Atık"], correctAnswer: 0, image: "floresan-lamba.jpg" },
-            { question: "Kahve otomatlarından çıkan bu kirli bardaklar nereye atılmalıdır?", options: ["Evsel Atık", "Kağıt Atık", "Plastik Atık", "Tehlikeli Atık"], correctAnswer: 0, image: "kirli-bardak.jpg" },
-            { question: "Sevkiyat sonrası çıkan bu temiz ambalajlar nereye atılır?", options: ["Atık Karton", "Naylon Atık", "Evsel Atık", "Tehlikeli Atık"], correctAnswer: 0, image: "atik-karton.jpg" },
-            { question: "Parça paketlemede kullanılan bu şeffaf filmler nereye atılır?", options: ["Naylon Atık", "Plastik Atık", "Evsel Atık", "Tehlikeli Atık"], correctAnswer: 0, image: "shrink-plastik.png" },
-            { question: "Üretim hatalı bu sert plastik parçalar nereye atılmalıdır?", options: ["Plastik Atık", "Naylon Atık", "Evsel Atık", "Tehlikeli Atık"], correctAnswer: 0, image: "Plastic-parts-1024x596.png" },
-            { question: "Otomatlardan çıkan bu cam şişeler hangi üniteye atılır?", options: ["Cam Atık", "Dönüşümlü Ambalaj", "Evsel Atık", "Plastik Atık"], correctAnswer: 0, image: "cam-sise.jpg" },
-            { question: "Yemekhane kaynaklı bu organik atıklar nereye atılır?", options: ["Organik Atık", "Evsel Atık", "Tehlikeli Atık", "Naylon Atık"], correctAnswer: 0, image: "yemek-artigi.jpg" },
-            { question: "Zemine dökülen yağların temizliğinde kullanılan tozlar nereye atılır?", options: ["Absorban Kabı", "Tehlikeli Atık", "Evsel Atık", "Plastik Atık"], correctAnswer: 0, image: "absorban-granul.jpg" },
-            { question: "İşleme merkezlerinde kullanılan yağlı üstüpülerin atılacağı ünite hangisidir?", options: ["Tehlikeli Atık", "Evsel Atık", "Absorban Kabı", "Naylon Atık"], correctAnswer: 0, image: "kirli-ustupu.jpg" },
-            { question: "Ofislerden çıkan gizlilik içermeyen kağıtlar nereye atılmalıdır?", options: ["Kağıt Atık", "Atık Karton", "Evsel Atık", "Tehlikeli Atık"], correctAnswer: 0, image: "kagit-atik.jpg" },
-            { question: "Görseldeki ünitenin üzerinde 'Tehlikeli Atık' yazmaktadır. Hangisi buraya ATILABİLİR?", options: ["Yağlı eldiven", "Yemek artığı", "Pet şişe", "Temiz gazete"], correctAnswer: 0, image: "kutu-tehlikeli.jpg" },
-            { question: "Hangi eşleşme OYAK HORSE atık yönetim planına göre YANLIŞTIR?", options: ["Toner - Tehlikeli Atık", "Streç - Naylon Atık", "Yağlı talaş - Evsel Atık", "Pil - Atık Pil Kutusu"], correctAnswer: 2, image: "yagli-talas.jpg" },
-            { question: "Motor hattından çıkan yağlı emici pedler için doğru ünite hangisidir?", options: ["Tehlikeli Atık", "Plastik Atık", "Naylon Atık", "Evsel Atık"], correctAnswer: 0, image: "yagli-ped.jpg" },
-            { question: "Lojistikte kullanılan bu plastik şeritler hangi kategoriye girer?", options: ["Plastik Atık", "Naylon Atık", "Ambalaj Atığı", "Evsel Atık"], correctAnswer: 0, image: "plastik-cember.jpg" },
-            { question: "Görseldeki bidonun üzerinde kuru kafa işareti varsa nereye atılmalıdır?", options: ["Tehlikeli Atık", "Plastik Atık", "Evsel Atık", "Absorban Kabı"], correctAnswer: 0, image: "kimyasal-bidon.jpg" },
-            { question: "Mavi renkli geri dönüşüm ünitesine hangisi atılabilir?", options: ["Metal kutu", "Yağlı üstüpü", "Yemek artığı", "Sigara izmariti"], correctAnswer: 0, image: "kutu-geri-donusum.jpg" },
-            { question: "Siyah veya gri renkli üniteye hangisinin atılması DOĞRUDUR?", options: ["Süprüntü", "Toner", "Floresan", "Akü"], correctAnswer: 0, image: "kutu-evsel.jpg" },
-            { question: "Vites kutusu hattından çıkan hatalı elektronik kartlar nereye atılır?", options: ["Elektronik Atık", "Tehlikeli Atık", "Plastik Atık", "Metal Atık"], correctAnswer: 0, image: "elektronik-atik.jpg" },
-            { question: "Atık kağıt ünitesine aşağıdakilerden hangisi ATILMAZ?", options: ["Yağlanmış kağıt", "Fotokopi kağıdı", "Gazete", "Katalog"], correctAnswer: 0, image: "kagit-atik.jpg" },
-            { question: "Alüminyum enjeksiyon biriminde yağ sızıntısı olduğunda ne kullanılmalıdır?", options: ["Absorban granül", "Karton kutu", "Naylon poşet", "Bez parçası"], correctAnswer: 0, image: "absorban-granul.jpg" },
-            { question: "Absorban kabına aşağıdakilerden hangisi atılabilir?", options: ["Kullanılmış emici granül", "Temiz streç", "Cam şişe", "Toner"], correctAnswer: 0, image: "absorban-granul.jpg" },
-            { question: "Naylon atık ünitesine hangisi atılmalıdır?", options: ["Balonlu naylon", "Yağlı bez", "Metal parça", "Karton"], correctAnswer: 0, image: "temiz-naylon.jpg" },
-            { question: "Aşağıdakilerden hangisi tehlikeli atık değildir?", options: ["Temiz pet şişe", "Boş sprey kutusu", "Kontamine bez", "Bitmiş pil"], correctAnswer: 0, image: "kutu-tehlikeli.jpg" },
-            { question: "Alüminyum enjeksiyonda kullanılan piston yağı kapları nereye atılır?", options: ["Tehlikeli Atık", "Plastik Atık", "Evsel Atık", "Naylon Atık"], correctAnswer: 0, image: "kimyasal-bidon.jpg" },
-            { question: "Kantin alanındaki cam içecek şişeleri nereye atılmalıdır?", options: ["Cam Atık", "Evsel Atık", "Plastik Atık", "Tehlikeli Atık"], correctAnswer: 0, image: "cam-sise.jpg" },
-            { question: "Ofislerdeki boş kartuşların doğru atık sınıfı hangisidir?", options: ["Tehlikeli Atık", "Kağıt Atık", "Plastik Atık", "Evsel Atık"], correctAnswer: 0, image: "bos-toner.jpg" },
-            { question: "Atık karton ünitesine sadece hangi tür maddeler atılır?", options: ["Temiz karton kutular", "Yağlı kutular", "Plastik şeritler", "Yemek artıkları"], correctAnswer: 0, image: "atik-karton.jpg" }
+            { question: "Görseldeki Tehlikeli Atık kabına aşağıdakilerden hangisi ATILMAZ?", options: ["Yağlı metal talaşı", "Kontamine eldiven", "Temiz karton kutu", "Boş toner"], correctAnswer: 2, image: "kutu-tehlikeli.jpg" },
+            { question: "Aşağıdaki atıklardan hangisi Evsel Atık kutusuna atılmaya uygundur?", options: ["Yağlı üstüpü", "Islanmış peçete", "Alüminyum içecek kutusu", "Bitmiş pil"], correctAnswer: 1, image: "kutu-evsel.jpg" },
+            { question: "Geri Dönüşümlü Ambalaj kabına aşağıdakilerden hangisi atılmamalıdır?", options: ["Temiz poşet", "Yağlı absorban ped", "Metal içecek kutusu", "Plastik şişe"], correctAnswer: 1, image: "kutu-ambalaj.jpg" },
+            { question: "Üretim hattından hattından çıkan yağlı metal talaşları nereye atılmalıdır?", options: ["Tehlikeli Atık", "Evsel Atık", "Naylon Atık", "Plastik atık"], correctAnswer: 0, image: "yagli-talas.jpg" },
+            { question: "Piston yağı kalıntısı içeren bu atıklar için doğru atık kabı hangisidir?", options: ["Evsel Atık", "Plastik atık", "Karton atık", "Tehlikeli Atık"], correctAnswer: 3, image: "piston-yagi.jpg" },
+            { question: "Kullanılmış atık eldivenler hangi üniteye atılmalıdır?", options: ["Tehlikeli Atık", "Evsel Atık", "Plastik atık", "Naylon atık"], correctAnswer: 0, image: "maske-eldiven.jpg" },
+            { question: "Tehlikeli madde taşıyan boş bidonlar nereye atılmalıdır?", options: ["Plastik atık", "Tehlikeli Atık", "Evsel Atık", "Absorban kabı"], correctAnswer: 1, image: "kimyasal-bidon.jpg" },
+            { question: "Yağ sızıntısı temizliğinde kullanılan absorbanlar hangi kutuya atılır?", options: ["Evsel Atık", "Tehlikeli Atık", "Absorban kabı", "Plastik atık"], correctAnswer: 1, image: "yagli-ped.jpg" },
+            { question: "Lojistik biriminden çıkan bu sert plastik şerit çemberler nereye atılmalıdır?", options: ["Naylon atık", "Plastik atık", "Karton atık", "Tehlikeli Atık"], correctAnswer: 1, image: "plastik-cember.jpg" },
+            { question: "Bilgisayar ekipmanlarının hangi atık kabına atılması uygundur?", options: ["Plastik atık", "Evsel Atık", "Tehlikeli Atık", "Kağıt Atık"], correctAnswer: 2, image: "elektronik-atik.jpg" },
+            { question: "Yedek parça ambalajından çıkan temiz poşetler nereye atılır?", options: ["Naylon atık", "Plastik atık", "Evsel Atık", "Tehlikeli Atık"], correctAnswer: 0, image: "temiz-naylon.jpg" },
+            { question: "Tesis içinde bulunan bu atık piller hangi kutuya atılmalıdır?", options: ["Atık pil kutusu", "Tehlikeli Atık", "Evsel Atık", "Naylon atık"], correctAnswer: 0, image: "atik-pil.jpg" },
+            { question: "Kirli kahve bardaklar nereye atılmalıdır?", options: ["Kağıt Atık", "Plastik atık", "Evsel Atık", "Tehlikeli Atık"], correctAnswer: 2, image: "kirli-bardak.jpg" },
+            { question: "Sevkiyat sonrası çıkan bu temiz ambalaj kolileri nereye atılır?", options: ["Atık pil kutusu", "Kağıt Atık", "Karton atık", "Tehlikeli Atık"], correctAnswer: 2, image: "atik-karton.jpg" },
+            { question: "Parça paketlemede kullanılan şeffaf filmler nereye atılır?", options: ["Plastik atık", "Naylon atık", "Evsel Atık", "Karton atık"], correctAnswer: 1, image: "shrink-plastik.png" },
+            { question: "Üretim hatalı sert plastik parçalar nereye atılmalıdır?", options: ["Geri dönüşümlü ambalaj kabı", "Naylon atık", "Evsel Atık", "Plastik atık"], correctAnswer: 3, image: "Plastic-parts-1024x596.png" },
+            { question: "Cam şişeler hangi üniteye atılmalıdır?", options: ["Geri dönüşümlü ambalaj kabı", "Kağıt Atık", "Tehlikeli Atık", "Plastik atık"], correctAnswer: 0, image: "cam-sise.jpg" },
+            { question: "Nem tutucular hangi atık kabına atılmalıdır", options: ["Tehlikeli Atık", "Naylon atık", "Kağıt Atık", "Evsel Atık"], correctAnswer: 3, image: "nem-tutucu.jpg" },
+            { question: "Zemine dökülen yağların temizliğinde kullanılan tozlar nereye atılır?", options: ["Absorban kabı", "Tehlikeli Atık", "Evsel Atık", "Plastik atık"], correctAnswer: 0, image: "absorban-granul.jpg" },
+            { question: "İşleme merkezlerinde kullanılan yağlı üstüpülerin atılacağı ünite hangisidir?", options: ["Evsel Atık", "Absorban kabı", "Tehlikeli Atık", "Naylon atık"], correctAnswer: 2, image: "kirli-ustupu.jpg" },
+            { question: "Ofislerden çıkan gizlilik içermeyen kağıtlar nereye atılmalıdır?", options: ["Karton atık", "Kağıt Atık", "Evsel Atık", "Tehlikeli Atık"], correctAnswer: 1, image: "kagit-atik.jpg" },
+            { question: "Görseldeki Tehlikeli Atık kabına aşağıdakilerden hangisi atılmalıdır?", options: ["Yağlı eldiven", "Yemek artığı", "Pet şişe", "Temiz gazete"], correctAnswer: 0, image: "kutu-tehlikeli.jpg" },
+            { question: "Görseldeki Kağıt Atık kutusuna hangisinin atılması doğrudur?", options: ["Karton koli", "Yağlı pizza kutusu", "Fotokopi kağıdı", "Plastik dosya"], correctAnswer: 2, image: "kutu-kagit.jpg" },
+            { question: "Absorban kabı ünitesine aşağıdakilerden hangisi atılabilir?", options: ["Kullanılmış emici granül", "Temiz streç film", "Metal cıvata", "Atık pil"], correctAnswer: 0, image: "kutu-absorban.jpg" },
+            { question: "Plastik atık kutusuna hangisinin atılması yanlıştır?", options: ["Sert plastik parça", "Plastik çember", "Yağlı plastik bidon", "Temiz plastik kapak"], correctAnswer: 2, image: "kutu-plastik.jpg" },
+            { question: "Aşağıdakilerden hangisi Karton Atık kabına atılmalıdır?", options: ["Yağlı yemek paketi", "Temiz sevkiyat kolisi", "Plastik şerit", "Kırık floresan"], correctAnswer: 1, image: "kutu-karton.jpg" },
+            { question: "Naylon atık kutusuna hangisinin atılması uygundur?", options: ["Yağlı naylon", "Karton koli", "Temiz poşet naylon", "Metal talaş"], correctAnswer: 2, image: "kutu-naylon.jpg" },
+            { question: "Atık pil kutusu ünitesine aşağıdakilerden hangisinin atılması yanlıştır?", options: ["Kalem pil", "Lityum batarya", "Metal kutu", "Düğme pil"], correctAnswer: 2, image: "kutu-pil.jpg" },
+            { question: "Görseldeki Geri Dönüşümlü Ambalaj kabına hangisi atılabilir?", options: ["Yağlı bez", "Temiz plastik şişe", "Yemek artığı", "Asitli sıvı"], correctAnswer: 1, image: "kutu-ambalaj.jpg" },
+            { question: "Aşağıdakilerden hangisi Tehlikeli Atık ünitesine ATILMAZ?", options: ["Boş aerosol kutusu", "Kirli filtre", "Kontamine bez", "Temiz boş koli"], correctAnswer: 3, image: "kutu-tehlikeli.jpg" },
+            { question: "Evsel Atık ünitesine hangisinin atılması DOĞRUDUR?", options: ["Elektronik Kablo", "Islak mendil", "Yağlı talaş", "Floresan lamba"], correctAnswer: 1, image: "kutu-evsel.jpg" },
+            { question: "Görseldeki Kağıt Atık kutusuna aşağıdakilerden hangisinin atılması uygun değildir?", options: ["Eski takvim", "Gazete", "Yağlı yemek kutusu", "Not kağıdı"], correctAnswer: 2, image: "kutu-kagit.jpg" },
+            { question: "Absorban kabına hangisinin atılması yanlıştır?", options: ["Emici toz", "Yağlı granül", "Kontamine emici ped", "Metal talaş"], correctAnswer: 3, image: "kutu-absorban.jpg" },
+            { question: "Plastik atık ünitesine aşağıdakilerden hangisinin atılması uygundur?", options: ["Boş deterjan şişesi", "Yağlı bidon", "Karton koli", "Cam bardak"], correctAnswer: 0, image: "kutu-plastik.jpg" },
+            { question: "Naylon atık ünitesine hangisinin atılması yanlıştır?", options: ["Balonlu naylon", "Temiz streç", "Yağlanmış poşet", "Temiz sevkiyat naylonu"], correctAnswer: 2, image: "kutu-naylon.jpg" },
+            { question: "Tehlikeli Atık kabına hangisi atılmalıdır?", options: ["Gıda artığı", "Yağlı emici ped", "Meyve kabuğu", "Temiz karton"], correctAnswer: 1, image: "kutu-tehlikeli.jpg" },
+            { question: "Geri Dönüşümlü Ambalaj kabına hangisi ATILMAMALIDIR?", options: ["Metal meşrubat kutusu", "Temiz plastik kap", "Yağlı ambalaj", "Plastik su şişesi"], correctAnswer: 2, image: "kutu-ambalaj.jpg" },
+            { question: "Aşağıdaki eşleşmelerden hangisi YANLIŞTIR?", options: ["Bitmiş kutu kola - Geri dönüşümlü ambalaj Atık", "Peçete - Evsel Atık", "Streç - Naylon atık", "Pil - Tehlikeli atık"], correctAnswer: 3, image: "kutu-pil.jpg" }
         ];
 
         let state = { currentUser: "", currentDept: "", index: 0, score: 0, currentSet: [], records: JSON.parse(localStorage.getItem('oyak_waste_data')) || [] };
@@ -158,7 +154,7 @@
             const dept = document.getElementById('user-dept').value;
             if (!name || !dept) { document.getElementById('login-error').classList.remove('hidden'); return; }
             state.currentUser = name; state.currentDept = dept; state.index = 0; state.score = 0;
-            state.currentSet = [...soruHavuzu].sort(() => Math.random() - 0.5).slice(0, 20);
+            state.currentSet = [...soruHavuzu].sort(() => Math.random() - 0.5).slice(0, 8);
             showScreen('screen-quiz'); renderQuestion();
         }
 
@@ -203,7 +199,7 @@
             const record = { name: state.currentUser, dept: state.currentDept, score: state.score, date: new Date().toLocaleDateString('tr-TR') };
             state.records.push(record); localStorage.setItem('oyak_waste_data', JSON.stringify(state.records));
             document.getElementById('final-score').innerText = `${state.score} / ${state.currentSet.length}`;
-            document.getElementById('result-message').innerText = state.score >= 16 ? "Yüksek farkındalık seviyesi." : "Eğitim notlarını inceleyiniz.";
+            document.getElementById('result-message').innerText = state.score >= 6 ? "Yüksek farkındalık seviyesi." : "Atık yönetim planını tekrar inceleyiniz.";
             showScreen('screen-result');
         }
 
